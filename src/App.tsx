@@ -1,44 +1,42 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { Component, useState } from 'react';
 import './App.css';
 import Header from './components/header';
 import { Character } from './shared/types/character';
-import { CombatContext } from './shared/context/combatContext';
+import { CombatProvider } from './shared/context/combatContext';
+import CharacterTile from './components/characterTile';
+import { withStyles, WithStyles } from '@material-ui/core';
+import useCombat from './shared/hooks/useCombat';
 
-interface AppState {
-  characters: Character[],
-  inCombat: boolean
-}
-
-type Props = {}
-
-class App extends Component<Props, AppState> {
-  constructor(props: Props){
-    super(props);
-    this.state = {characters: [], inCombat: false};
+const styles = () => ({
+  app: {
+    display: 'flex'
+  },
+  centerContent: {
+    padding: '80px 40px 40px 40px'
   }
+})
 
-  addCharacter(character: Character) {
-    let characters: Character[] = {...this.state.characters};
-    characters.push(character);
-    this.setState({characters});
-  }
+type Props = {} & WithStyles
 
-  toggleCombat = () => {
-    this.setState({
-      inCombat: !this.state.inCombat
-    })
-  }
-
-  render() {
-    return (
-      <CombatContext.Provider value={this.state ? this.state.inCombat : false}>
-        <div className="App">
-          <Header toggleCombat={this.toggleCombat}/>
+const App: React.FunctionComponent<Props> = (props) => {
+  const {combat, toggleCombat} = useCombat();
+  const [characterState,] = useState({characters: [{name: 'P1', playerName: 'Allen', isPC: true, baseInitiative: 0}]});
+  return (
+    <CombatProvider>
+        <div className="header">
+          <Header toggleCombat={toggleCombat}/>
         </div>
-      </CombatContext.Provider>      
-    );
-  }
+        <main className={props.classes.centerContent}>
+          { !combat && (            
+              characterState.characters.map((character:Character) => {
+                return (
+                  <CharacterTile key={character.name} character={character} />
+                )
+              })
+          )}
+        </main>
+      </CombatProvider>   
+  )
 }
 
-export default App;
+export default withStyles(styles)(App);

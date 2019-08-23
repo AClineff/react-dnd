@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, TextField, WithStyles, withStyles } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, TextField, WithStyles, withStyles, DialogActions, Button } from '@material-ui/core';
 import { Character } from '../shared/types/character';
 import { createEmptyCharacterObject } from '../shared/characterUtils';
 
@@ -42,6 +42,7 @@ const formConfig = [
 ]
 
 const CreateCharacterDialog:React.FunctionComponent<Props> = (props) => {
+    const {isOpen, handleClose, classes} = props;
     const [formValues, updateFormValues] = useState<FormValues>(createEmptyCharacterObject());
 
     const handleChange = (name:string) => (event:any) => {
@@ -51,7 +52,15 @@ const CreateCharacterDialog:React.FunctionComponent<Props> = (props) => {
         })
     }
 
-    const {isOpen, handleClose, classes} = props;
+    const handleCancel = () => {
+        updateFormValues(createEmptyCharacterObject());
+        handleClose();
+    }
+
+    const handleSave = () => {
+        console.log('Going to save character with form values ', formValues);
+        handleCancel();
+    }
 
     return (
         <Dialog
@@ -65,6 +74,7 @@ const CreateCharacterDialog:React.FunctionComponent<Props> = (props) => {
                        formConfig.map(config => {
                            return (
                             <TextField
+                                key={config.id}
                                 id={`${config.id}-field`}
                                 label={config.label}
                                 className={classes.formFields}
@@ -77,6 +87,10 @@ const CreateCharacterDialog:React.FunctionComponent<Props> = (props) => {
                     }
                 </form>
             </DialogContent>
+            <DialogActions>
+                <Button color="primary" onClick={handleCancel}>Cancel</Button>
+                <Button color="primary" onClick={handleSave}>Save</Button>
+            </DialogActions>
 
         </Dialog>
     );
