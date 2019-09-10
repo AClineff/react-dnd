@@ -6,6 +6,7 @@ import { CombatProvider } from './shared/context/combatContext';
 import CharacterTile from './components/characterTile';
 import { withStyles, WithStyles } from '@material-ui/core';
 import useCombat from './shared/hooks/useCombat';
+import NestedCheckbox from './components/nestedCheckbox';
 
 const styles = () => ({
   app: {
@@ -35,6 +36,9 @@ const App: React.FunctionComponent<Props> = (props) => {
               })
           )}
         </main>
+        <div>
+          <NestedCheckbox/>
+        </div>
       </CombatProvider>   
   )
 }
